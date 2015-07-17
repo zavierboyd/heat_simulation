@@ -28,7 +28,7 @@ inside_Joules = inside_Temp * inside_mass
 window_Joules = window_Temp * window_mass
 outside_Joules = outside_Temp * outside_mass
 # init time
-time = 0
+time = 0.0
 dt = 60
 
 # simulation
