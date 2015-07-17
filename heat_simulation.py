@@ -32,10 +32,11 @@ time = 0.0
 dt = 60
 
 # simulation
-a = MatrixImpN([[1 - wall_inside_conduction * dt * (1 / wall_mass), wall_inside_conduction * dt * (1 / wall_mass)],
-                [wall_inside_conduction * dt * (1 / inside_mass), 1 - wall_inside_conduction * dt * (1 / inside_mass)]])
+a = MatrixImpN([[1 - wall_inside_conduction * dt * (1 / wall_mass), wall_inside_conduction * dt * (1 / wall_mass), 0],
+                [wall_inside_conduction * dt * (1 / inside_mass), 1 - wall_inside_conduction * dt * (1 / inside_mass) - inside_window_conduction * dt * (1 / inside_mass), inside_window_conduction * dt * (1 / inside_mass)],
+                [0, inside_window_conduction * dt * (1 / window_mass), 1 - inside_window_conduction * dt * (1 / window_mass)]])
 
-b = MatrixImpN([[wall_Temp], [inside_Temp]])
+b = MatrixImpN([[wall_Temp], [inside_Temp], [window_Temp]])
 
 for i in range(60):
     b = a * b
@@ -45,23 +46,24 @@ for i in range(60):
     # calculate energy flow part 1 Watts
     wall_to_inside_Watts = wall_inside_conduction * wall_Temp
     inside_to_wall_Watts = wall_inside_conduction * inside_Temp
-    # inside_to_window_Watts = inside_window_conduction * inside_Temp
-    # window_to_inside_Watts = inside_window_conduction * window_Temp
+    inside_to_window_Watts = inside_window_conduction * inside_Temp
+    window_to_inside_Watts = inside_window_conduction * window_Temp
     # window_to_outside_Watts = window_outside_conduction * window_Temp
     # outside_to_window_Watts = window_outside_conduction * outside_Temp
     ##################################################################
     # calculate energy flow part 2 Joules
     wall_to_inside_Joules = wall_to_inside_Watts * dt
     inside_to_wall_Joules = inside_to_wall_Watts * dt
-    # inside_to_window_Joules = inside_to_window_Watts * dt
-    # window_to_inside_Joules = window_to_inside_Watts * dt
+    inside_to_window_Joules = inside_to_window_Watts * dt
+    window_to_inside_Joules = window_to_inside_Watts * dt
     # window_to_outside_Joules = window_to_outside_Watts * dt
     # outside_to_window_Joules = outside_to_window_Watts * dt
     #######################################################
     # calculate joules in each mass
     wall_Joules += inside_to_wall_Joules - wall_to_inside_Joules
-    inside_Joules += wall_to_inside_Joules - inside_to_wall_Joules
-    # inside_Joules += wall_to_inside_Joules + window_to_inside_Joules - inside_to_wall_Joules - inside_to_window_Joules
+    # inside_Joules += wall_to_inside_Joules - inside_to_wall_Joules
+    inside_Joules += wall_to_inside_Joules + window_to_inside_Joules - inside_to_wall_Joules - inside_to_window_Joules
+    window_Joules += inside_to_window_Joules - window_to_inside_Joules
     # window_Joules += inside_to_window_Joules + outside_to_window_Joules\
     # - window_to_inside_Joules - window_to_outside_Joules
     # outside_Joules += window_to_outside_Joules - outside_to_window_Joules
@@ -79,7 +81,7 @@ for i in range(60):
     ##################################################
     print "{wall_Temp:4.2f} K Wall".format(wall_Temp=wall_Temp),
     print "{inside_Temp:4.2f} K Inside".format(inside_Temp=inside_Temp),
-    # print "{window_Temp:4.2f} K Window".format(window_Temp=window_Temp),
+    print "{window_Temp:4.2f} K Window".format(window_Temp=window_Temp),
     # print "{outside_Temp:4.2f} K Outside".format(outside_Temp=outside_Temp)
     time += dt
 
