@@ -1,5 +1,6 @@
 #v2.0 
 from __future__ import division
+from matrix_class import *
 #init material temperatures K
 wall_Temp = 18.0
 inside_Temp = 20.0
