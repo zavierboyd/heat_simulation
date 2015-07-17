@@ -18,7 +18,6 @@ class MatrixImpN(object):
                 newLine.append(snum+onum)
             newMatrix.append(newLine)
         comMatrix=MatrixImpN(newMatrix)
-        print comMatrix
         return comMatrix
 
     def __mul__(self,other):
@@ -33,7 +32,6 @@ class MatrixImpN(object):
                 newLine.append(newNum)
             newMatrix.append(newLine)
         comMatrix = MatrixImpN(newMatrix)
-        print comMatrix
         return comMatrix
 
     def __repr__(self):

@@ -1,6 +1,10 @@
 #v2.0 
 from __future__ import division
 from matrix_class import *
+d=MatrixImpN([[1,1],[1,1]])
+print d
+
+
 #init material temperatures K
 wall_Temp = 18.0
 inside_Temp = 20.0
@@ -30,32 +34,43 @@ dt = 60
 walltemps = []
 insidetemps = []
 #simulation
+a = MatrixImpN([[1 - wall_inside_conduction * dt * (1 / wall_mass),wall_inside_conduction * dt * (1 / wall_mass)],\
+                [wall_inside_conduction * dt * (1 / inside_mass),1 - wall_inside_conduction * dt * (1 / inside_mass)]])
+
+b = MatrixImpN([[wall_Temp],[inside_Temp]])
+
 for i in range(60):
+    b=a*b
+    print
+    print
+    print b
     # calculate energy flow part 1 Watts
     wall_to_inside_Watts = wall_inside_conduction * wall_Temp
     inside_to_wall_Watts = wall_inside_conduction * inside_Temp
-    inside_to_window_Watts = inside_window_conduction * inside_Temp
-    window_to_inside_Watts = inside_window_conduction * window_Temp
-    window_to_outside_Watts = window_outside_conduction * window_Temp
-    outside_to_window_Watts = window_outside_conduction * outside_Temp
+    # inside_to_window_Watts = inside_window_conduction * inside_Temp
+    # window_to_inside_Watts = inside_window_conduction * window_Temp
+    # window_to_outside_Watts = window_outside_conduction * window_Temp
+    # outside_to_window_Watts = window_outside_conduction * outside_Temp
     ##################################################################
     # calculate energy flow part 2 Joules
     wall_to_inside_Joules = wall_to_inside_Watts * dt
     inside_to_wall_Joules = inside_to_wall_Watts * dt
-    inside_to_window_Joules = inside_to_window_Watts * dt
-    window_to_inside_Joules = window_to_inside_Watts * dt
-    window_to_outside_Joules = window_to_outside_Watts * dt
-    outside_to_window_Joules = outside_to_window_Watts * dt
+    # inside_to_window_Joules = inside_to_window_Watts * dt
+    # window_to_inside_Joules = window_to_inside_Watts * dt
+    # window_to_outside_Joules = window_to_outside_Watts * dt
+    # outside_to_window_Joules = outside_to_window_Watts * dt
     #######################################################
     # calculate joules in each mass
     wall_Joules += inside_to_wall_Joules - wall_to_inside_Joules
-    inside_Joules += wall_to_inside_Joules + window_to_inside_Joules - inside_to_wall_Joules - inside_to_window_Joules
-    window_Joules += inside_to_window_Joules + outside_to_window_Joules - window_to_inside_Joules - window_to_outside_Joules
-    outside_Joules += window_to_outside_Joules - outside_to_window_Joules
+    inside_Joules += wall_to_inside_Joules - inside_to_wall_Joules
+    # inside_Joules += wall_to_inside_Joules + window_to_inside_Joules - inside_to_wall_Joules - inside_to_window_Joules
+    # window_Joules += inside_to_window_Joules + outside_to_window_Joules - window_to_inside_Joules - window_to_outside_Joules
+    # outside_Joules += window_to_outside_Joules - outside_to_window_Joules
     ########################################################################################################################
     # calculate new temperatures
     wall_temp_test = wall_Temp * (1 - wall_inside_conduction * dt * (1 / wall_mass)) + \
                      inside_Temp *   (wall_inside_conduction * dt * (1 / wall_mass))
+
 #    wall_temp_test = (wall_Temp * wall_mass + wall_inside_conduction * inside_Temp * dt - wall_inside_conduction * wall_Temp * dt) * (1 / wall_mass)
 #    wall_temp_test = (wall_Joules + wall_inside_conduction * inside_Temp * dt - wall_inside_conduction * wall_Temp * dt) * (1 / wall_mass)
         #wall_Temp * (wall_inside_conduction * dt) + inside_Temp * (-wall_inside_conduction * dt)
@@ -69,8 +84,8 @@ for i in range(60):
     insidetemps.append(inside_Temp)
     print "{wall_Temp:4.2f} K Wall".format(wall_Temp=wall_Temp),
     print "{inside_Temp:4.2f} K Inside".format(inside_Temp=inside_Temp),
-    print "{window_Temp:4.2f} K Window".format(window_Temp=window_Temp),
-    print "{outside_Temp:4.2f} K Outside".format(outside_Temp=outside_Temp)
+   # print "{window_Temp:4.2f} K Window".format(window_Temp=window_Temp),
+   # print "{outside_Temp:4.2f} K Outside".format(outside_Temp=outside_Temp)
     time += dt
 
 
