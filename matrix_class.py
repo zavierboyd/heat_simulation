@@ -3,7 +3,7 @@
 
 class MatrixImpN(object):
     """Creates a matrix ([[1,0],[0,1]])"""
-    ##################### sorry zavier for not getting out of your room on Wed 22 July
+    #####################
     ####Magic Methods####
     #####################
 
