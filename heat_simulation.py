@@ -32,17 +32,35 @@ time = 0.0
 dt = 60
 
 # simulation
-a = MatrixImpN([[1 - wall_inside_conduction * dt * (1 / wall_mass), wall_inside_conduction * dt * (1 / wall_mass), 0],
+test = MatrixImpN([[0, 0, 0], [0, (10^-5), 0], [0, 0, 0]])
+wam = MatrixImpN([[0.0, wall_inside_conduction, 0.0],
+                  [wall_inside_conduction, 0.0, inside_window_conduction],
+                  [0.0, inside_window_conduction, 0.0]])
+
+mass = MatrixImpN([[1/wall_mass], [1/inside_mass], [1/window_mass]]).diagonal()
+
+I = MatrixImpN.identityMatrix(3)
+
+neg_c = (wam * MatrixImpN([[-1], [-1], [-1]])).diagonal()
+
+a2 = mass * (neg_c + wam) * dt + I
+
+a = MatrixImpN([[1 - wall_inside_conduction * dt * (1 / wall_mass), wall_inside_conduction * dt * (1 / wall_mass), 0.0],
                 [wall_inside_conduction * dt * (1 / inside_mass), 1 - wall_inside_conduction * dt * (1 / inside_mass) - inside_window_conduction * dt * (1 / inside_mass), inside_window_conduction * dt * (1 / inside_mass)],
-                [0, inside_window_conduction * dt * (1 / window_mass), 1 - inside_window_conduction * dt * (1 / window_mass)]])
+                [0.0, inside_window_conduction * dt * (1 / window_mass), 1 - inside_window_conduction * dt * (1 / window_mass)]])
+
+print a2 == a
 
 b = MatrixImpN([[wall_Temp], [inside_Temp], [window_Temp]])
+b2 = MatrixImpN([[wall_Temp], [inside_Temp], [window_Temp]])
 
 for i in range(60):
+    b2 = a2 * b2
     b = a * b
     print
     print
     print b
+    print b2
     # calculate energy flow part 1 Watts
     wall_to_inside_Watts = wall_inside_conduction * wall_Temp
     inside_to_wall_Watts = wall_inside_conduction * inside_Temp
